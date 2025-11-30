@@ -1,0 +1,199 @@
+Product Backlog - Mental Well-being Web App
+Vision du projet : Une application web sécurisée et légère permettant aux utilisateurs
+de suivre leur bien-être mental grâce à un journal, offrant une analyse des sentiments
+immédiate et automatisée sans nécessiter de ressources de calcul importantes.
+Technologies utilisées :
+● Frontend: Next.js 14+ (React) + Tailwind CSS + Shadcn/UI
+● Back-end : Flask (Python)
+● Base de données : SQLite
+● Traitement du langage naturel : TextBlob (français) / VADER pour l’analyse
+des sentiments ; spaCy pour le traitement de texte léger (lemmatisation)
+● Authentification : Flask-Login
+● Sécurité : bcrypt (mots de passe), chiffrement AES différé pour la version 2
+● Visualisation : Visualisation: Chart.js avec react-chartjs-2 wrapper
+Backlog Items(Classé par ordre de priorité)
+❖ Thème 1 : Sécurité des utilisateurs et gestion des comptes
+● US-1 (Élevé) : En tant que nouvel utilisateur, je souhaite créer un compte avec
+mon adresse e-mail et un mot de passe sécurisé afin de disposer d’un journal
+privé et personnel.
+○ Critères d’acceptation : L’adresse e-mail doit être unique et valide. Le
+mot de passe doit être chiffré avec bcrypt avant d’être enregistré.
+L’enregistrement de l’utilisateur est créé dans une base de données
+SQLite.
+● US-2 (Élevé) : En tant qu’utilisateur enregistré, je souhaite me connecter avec
+mon adresse e-mail et mon mot de passe afin d’accéder à mon tableau de bord
+et à mon journal privés.
+○ Critères d’acceptation : Une connexion réussie crée une session
+sécurisée et redirige vers le tableau de bord. En cas d’échec de
+connexion, un message d’erreur clair s’affiche.
+● US-3 (Moyen) : En tant qu’utilisateur connecté, je souhaite me déconnecter de
+mon compte afin de garantir la sécurité de mes informations sur un appareil
+partagé.
+○ Critères d’acceptation : La session est fermée de manière sécurisée et
+l’utilisateur est redirigé vers la page de connexion.
+❖ Thème 2 : Fonctionnalités principales du journal
+● US-4 (Élevé) : En tant qu’utilisateur connecté, je souhaite voir un éditeur de
+texte clair et simple sur mon tableau de bord afin de pouvoir commencer
+rapidement à noter mes pensées du jour.
+○ Critères d’acceptation : Une zone de texte large et accueillante ou un
+éditeur WYSIWYG simple est présent sur la page principale.
+● US-5 (Élevé) : En tant qu’utilisateur, je souhaite pouvoir enregistrer mon
+journal en un seul clic afin que mes pensées soient conservées de façon
+permanente.
+○ Critères d’acceptation : Cliquer sur « Enregistrer » envoie le texte au
+serveur, qui l’enregistre dans la table SQLite des entrées avec un
+horodatage. L’utilisateur reçoit une confirmation de réussite.
+● US-6 (Élevé) : En tant qu’utilisateur, je souhaite consulter une liste
+chronologique de mes entrées de journal précédentes (affichant la date et un
+extrait) afin de pouvoir facilement retrouver et relire mes anciennes pensées.
+○ Critères d’acceptation : Les entrées sont affichées dans une liste, de la
+plus récente à la plus ancienne, avec la date et les 100 premiers
+caractères environ.
+❖ Thème 3 : Analyse automatisée des sentiments (L’« Intelligence »)
+● US-7 (Élevé) : En tant qu’utilisateur, lorsque j’enregistre une entrée de journal,
+je souhaite que le système analyse automatiquement le sentiment exprimé et
+m’affiche un résultat simple et clair (par exemple : « Globalement positif », «
+Neutre », « Globalement négatif ») afin d’obtenir un retour immédiat.
+○ Critères d’acceptation : Le système traite le texte avec
+TextBlob/VADER+spaCy. Il renvoie un score de polarité qui est associé
+à une étiquette conviviale et enregistré avec l’entrée.
+● US-8 (Moyen) : En tant qu’utilisateur, je souhaite voir un indicateur visuel
+(comme une couleur ou un emoji) à côté de chaque entrée de ma liste,
+représentant son sentiment, afin de pouvoir consulter mon historique de
+manière émotionnelle.
+○ Critères d'acceptation : La liste d'entrée de l'US-6 est mise à jour pour
+afficher un point de couleur (par exemple, vert/positif, gris/neutre,
+rouge/négatif) ou un emoji (😊/ 😐/ 😔) pour chaque élément.
+❖ Thème 4 : Suivi du bien-être et tableau de bord
+● US-9 (Élevé) : Sur mon tableau de bord principal, je souhaite voir un graphique
+linéaire simple affichant les scores de sentiment de mes 10 à 15 dernières
+entrées, afin de suivre l’évolution de mon bien-être.
+○ Critères d’acceptation : Un graphique linéaire Chart.js est intégré au
+tableau de bord. Il représente les dates des entrées sur l’axe des abscisses
+et les scores de sentiment sur l’axe des ordonnées.
+● US-10 (Moyen) : Je souhaite voir un nuage de mots généré à partir de toutes
+mes entrées de journal, afin de visualiser rapidement les thèmes ou sujets les
+plus fréquents.
+○ Critères d’acceptation : Un processus côté serveur agrège et lemmatise
+tous les textes des utilisateurs, supprime les mots vides et génère des
+données de fréquence. L’interface utilisateur affiche ces données sous
+forme de nuage de mots sur une page dédiée « Insights ».
+❖ Thème 5 : Confidentialité des données et fonctionnalités améliorées
+● US-11 (Faible) : En tant qu’utilisateur, je souhaite pouvoir supprimer une
+entrée de journal en cas d’erreur ou de changement d’avis.
+○ Critères d’acceptation : Chaque entrée de la liste comporte un bouton «
+Supprimer » qui, après confirmation, la supprime définitivement de la
+base de données.
+● US-12 (Faible – À venir) : En tant qu’utilisateur, je souhaite exporter toutes
+mes entrées de journal au format JSON ou CSV afin de conserver une
+sauvegarde personnelle de mes données.
+● US-13 (Faible – À venir) : En tant qu’utilisateur, je souhaite configurer une
+notification de rappel d’écriture quotidienne afin de prendre l’habitude d’écrire
+régulièrement dans mon journal.
+Sprint: Mental Well-being Web App
+Sprint 1 : Bases de l’utilisateur et journalisation de base
+Objectif du Sprint : Un utilisateur peut créer un compte, se connecter et
+écrire/sauvegarder des entrées de journal dans son espace privé..
+user story Priori
+té
+Tâches
+US-1 : Inscription
+Utilisateur
+Haute 1. Créer le modèle User dans SQLite (id, email, pwd_hash, created_at)
+2. Construire le endpoint Flask /register (POST)
+3. Créer le formulaire d'inscription (email, mot de passe, confirmation)
+4. Implémenter le hachage bcrypt pour le mot de passe
+5. Ajouter la validation du formulaire et la gestion des erreurs
+US-2 : Connexion
+Utilisateur
+Haute 1. Construire le endpoint Flask /login (POST)
+2. Créer le formulaire de connexion
+3. Intégrer Flask-Login pour la gestion de session
+4. Configurer le décorateur "login required" pour les routes protégées
+US-4 : Éditeur de
+Texte pour le Journal
+Haute 1. Créer le modèle Entry dans SQLite (id, user_id, text, timestamp,
+sentiment_score)
+2. Construire "Dashboard" principal avec une grande zone de texte
+3. Implémenter une UI propre et réactive
+US-5 : Sauvegarder
+une Entrée de Journal
+Haute 1. Construire le endpoint Flask /api/entries (POST)
+2. Connecter Next.js frontend via fetch/useEffec pour sauvegarder
+l'entrée via Axios
+3. Stocker l'entrée en base de données avec l'horodatage actuel
+4. Afficher un message de succès/d'erreur à l'utilisateur
+US-3 : Déconnexion
+Utilisateur
+Moye
+nne
+1. Implémenter le endpoint Flask /logout
+2. Ajouter un bouton de déconnexion dans le frontend qui appelle le
+endpoint et redirige vers la page de connexion
+❖ Livrable du Sprint 1 : Une application fonctionnelle où le parcours utilisateur
+central (Inscription -> Connexion -> Écriture -> Sauvegarde) est complet et
+sans bug.
+Sprint 2 : Ajout de l'Intelligence et de l'Historique
+Objectif du Sprint : Chaque entrée de journal est automatiquement analysée pour en
+déterminer le sentiment, et l'utilisateur peut consulter ses entrées passées avec un
+contexte émotionnel.
+User story Priorité Tâches
+US-7 : Analyse de
+Sentiment
+Automatisée
+Haute 1. Intégrer TextBlob (Français) dans le backend Flask
+2. Modifier le endpoint /api/entries (POST) pour analyser le texte
+et sauvegarder le sentiment_score
+3. Associer le score numérique à un label utilisateur (ex :
+Positif/Neutre/Négatif)
+4. Renvoyer et afficher ce label à l'utilisateur après la sauvegarde
+US-6 : Voir les
+Entrées Passées
+Haute 1. Construire le endpoint Flask /api/entries (GET) pour récupérer
+les entrées de l'utilisateur
+2. Composant React EntryList pour afficher les entrées
+3. Formater les dates et afficher des extraits de texte
+4. Habiller la liste avec les composants Tailwind CSS + Shadcn
+components (cartes ou éléments de liste)
+US-8 : Indicateurs
+Visuels de Sentiment
+Moyenne 1. Mettre à jour le Composant React EntryList pour afficher le
+sentiment
+2. Implémenter un code couleur (ex : vert, gris, rouge) ou des
+émojis pour chaque entrée
+3. S'assurer que l'interface est intuitive et claire
+Livrable du Sprint 2 : L'application semble maintenant "intelligente". L'utilisateur
+obtient un retour immédiat sur son écriture et peut parcourir facilement son historique
+émotionnel.
+Sprint 3 : Le Tableau de Bord et la Finalisation
+Objectif du Sprint : L'utilisateur obtient des insights visuels sur l'évolution de son
+bien-être via un graphique et un nuage de mots, complétant ainsi le MVP.
+Récit Utilisateur Priorité Tâches
+US-9 : Graphique
+de l'Évolution du
+Sentiment
+Haute 1. Construire le endpoint Flask /api/sentiment_timeline (GET) pour renvoyer
+les dates/scores des 10 dernières entrées
+2. Intégrer chart.js avec wrapper React dans le projet(Installer et configurer
+`react-chartjs-2` et `chart.js`)
+3. Créer un composant Composant React Client "Tendance du Bien-être" avec
+un graphique en ligne
+4. Placer ce graphique en évidence sur le tableau de bord principal
+US-10 : Nuage de
+Mots
+Moyenne 1. Construire le endpoint Flask /api/word_frequencies (GET)
+2. Implémenter la logique backend pour lemmatiser tous les textes de
+l'utilisateur, supprimer les stopwords et calculer les fréquences
+3. Créer une nouvelle page "Insights" Route Next.js (app/insights/page.tsx)
+4. Intégrer une bibliothèque légère de nuage de mots (ex: react-wordcloud)
+pour visualiser les données
+Correction de
+Bugs, Stylisation et
+Finitions
+Haute 1. Dédier du temps à la correction des bugs des Sprints 1 & 2
+2. Améliorer la cohérence globale de l'UI/UX
+3. Vérifier le design responsive
+4. Tests d'intégration finaux et préparation pour la démo
+Livrable du Sprint 3 : Un MVP entièrement fonctionnel qui tient la promesse centrale
+du Cahier des Charges : un journal privé avec analyse émotionnelle automatisée et un
+suivi visuel.
