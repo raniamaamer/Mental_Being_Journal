@@ -2,7 +2,7 @@ import urllib.request
 import json
 
 # Test POST to Next.js frontend (should be proxied to Flask)
-url = 'http://localhost:3000/api/register'
+url = 'http://localhost:5000/api/register'
 data = {
     'email': 'test_proxy@example.com',
     'password': 'password123',
