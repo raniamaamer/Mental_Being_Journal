@@ -1,9 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "./ui/card";
 import { Navigation } from "./Navigation";
 import { Button } from "./ui/button";
-import type { User } from "../App";
+import type { User } from "../types";
 import { User as UserIcon, Mail, Shield, Download, Trash2 } from "lucide-react";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 
 interface ProfilePageProps {
   user: User;
@@ -39,12 +39,7 @@ export function ProfilePage({ user, onNavigate, onLogout }: ProfilePageProps) {
 
   return (
     <div className="min-h-screen">
-      <Navigation 
-        currentPage="profile"
-        onNavigate={onNavigate}
-        onLogout={onLogout}
-        userName={user.name}
-      />
+      <Navigation user={user} />
 
       <div className="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-8">

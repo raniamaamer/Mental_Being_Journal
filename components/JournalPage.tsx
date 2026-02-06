@@ -4,9 +4,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/
 import { Textarea } from "./ui/textarea";
 import { Navigation } from "./Navigation";
 import { analyzeText } from "../utils/nlpAnalysis";
-import type { User, JournalEntry } from "../App";
+import type { User, JournalEntry } from "../types";
 import { Sparkles, Save } from "lucide-react";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 import { Badge } from "./ui/badge";
 
 interface JournalPageProps {
@@ -75,12 +75,7 @@ export function JournalPage({ user, onAddEntry, onNavigate, onLogout }: JournalP
 
   return (
     <div className="min-h-screen">
-      <Navigation 
-        currentPage="journal"
-        onNavigate={onNavigate}
-        onLogout={onLogout}
-        userName={user.name}
-      />
+      <Navigation user={user} />
 
       <div className="max-w-6xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-8">
@@ -178,8 +173,8 @@ export function JournalPage({ user, onAddEntry, onNavigate, onLogout }: JournalP
                   <div>
                     <h4 className="mb-3">Overall Sentiment</h4>
                     <div className="flex items-center gap-3">
-                      <Badge className={`${getSentimentColor(analysis.sentiment)} px-4 py-2`}>
-                        {analysis.sentiment.toUpperCase()}
+                      <Badge className={`${getSentimentColor(analysis.sentiment || 'neutral')} px-4 py-2`}>
+                        {(analysis.sentiment || 'neutral').toUpperCase()}
                       </Badge>
                       <div className="flex-1 bg-gray-200 rounded-full h-3">
                         <div 
@@ -187,7 +182,7 @@ export function JournalPage({ user, onAddEntry, onNavigate, onLogout }: JournalP
                             analysis.sentiment === 'positive' ? 'bg-green-500' :
                             analysis.sentiment === 'negative' ? 'bg-red-500' : 'bg-gray-500'
                           }`}
-                          style={{ width: `${Math.abs(analysis.sentimentScore) * 100}%` }}
+                          style={{ width: `${Math.abs((analysis.sentimentScore || 0)) * 100}%` }}
                         ></div>
                       </div>
                     </div>
@@ -197,7 +192,7 @@ export function JournalPage({ user, onAddEntry, onNavigate, onLogout }: JournalP
                   <div>
                     <h4 className="mb-3">Detected Emotions</h4>
                     <div className="space-y-3">
-                      {Object.entries(analysis.emotions).map(([emotion, value]) => (
+                      {Object.entries(analysis.emotions || {}).map(([emotion, value]) => (
                         <div key={emotion}>
                           <div className="flex justify-between mb-1">
                             <span className="capitalize">{emotion}</span>
@@ -218,7 +213,7 @@ export function JournalPage({ user, onAddEntry, onNavigate, onLogout }: JournalP
                   <div>
                     <h4 className="mb-3">Key Themes</h4>
                     <div className="flex flex-wrap gap-2">
-                      {analysis.keywords.map((keyword, idx) => (
+                      {(analysis.keywords || []).map((keyword, idx) => (
                         <Badge key={idx} variant="outline" className="bg-purple-50">
                           {keyword}
                         </Badge>

@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "./ui/card";
 import { Navigation } from "./Navigation";
-import type { JournalEntry } from "../App";
+import type { JournalEntry } from "../types";
 import { BarChart3, TrendingUp, Calendar, Sparkles } from "lucide-react";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
@@ -13,16 +13,18 @@ interface DashboardPageProps {
 export function DashboardPage({ entries, onNavigate, onLogout }: DashboardPageProps) {
   // Prepare sentiment trend data
   const sentimentTrend = entries.map(entry => ({
-    date: new Date(entry.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-    score: entry.sentimentScore,
+    date: new Date(entry.date || entry.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+    score: entry.sentimentScore || entry.sentiment_score,
     sentiment: entry.sentiment
   })).reverse();
 
   // Prepare emotion distribution data
   const emotionTotals = entries.reduce((acc, entry) => {
-    Object.entries(entry.emotions).forEach(([emotion, value]) => {
-      acc[emotion] = (acc[emotion] || 0) + value;
-    });
+    if (entry.emotions) {
+      Object.entries(entry.emotions).forEach(([emotion, value]) => {
+        acc[emotion] = (acc[emotion] || 0) + value;
+      });
+    }
     return acc;
   }, {} as Record<string, number>);
 
@@ -42,10 +44,10 @@ export function DashboardPage({ entries, onNavigate, onLogout }: DashboardPagePr
 
   // Prepare weekly summary
   const last7Days = entries.slice(-7);
-  const avgSentiment = last7Days.reduce((sum, e) => sum + e.sentimentScore, 0) / (last7Days.length || 1);
+  const avgSentiment = last7Days.reduce((sum, e) => sum + (e.sentimentScore || e.sentiment_score || 0), 0) / (last7Days.length || 1);
   
   // All keywords from recent entries
-  const allKeywords = entries.flatMap(e => e.keywords);
+  const allKeywords = entries.flatMap(e => e.keywords || []);
   const keywordFreq = allKeywords.reduce((acc, word) => {
     acc[word] = (acc[word] || 0) + 1;
     return acc;
@@ -62,11 +64,7 @@ export function DashboardPage({ entries, onNavigate, onLogout }: DashboardPagePr
 
   return (
     <div className="min-h-screen">
-      <Navigation 
-        currentPage="dashboard"
-        onNavigate={onNavigate}
-        onLogout={onLogout}
-      />
+      <Navigation />
 
       <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-8">
@@ -182,7 +180,7 @@ export function DashboardPage({ entries, onNavigate, onLogout }: DashboardPagePr
                         cx="50%"
                         cy="50%"
                         labelLine={false}
-                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                        label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
                         outerRadius={100}
                         fill="#8884d8"
                         dataKey="value"
